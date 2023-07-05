@@ -2,20 +2,24 @@
 
 # Print usage help message
 usage() {
-  echo "Usage: $0 [-d bam_directory] [-t threads]"
+  echo "Usage: $0 [-d bam_directory] [-t threads] [-h]"
   echo "  -d    Directory containing .bam files to process"
   echo "  -t    Number of threads to use with samtools"
+  echo "  -h    Display this help message and exit"
   exit 1
 }
 
 # Parse command-line arguments
-while getopts ":d:t:" opt; do
+while getopts ":d:t:h" opt; do
   case ${opt} in
     d)
       bam_directory=$OPTARG
       ;;
     t)
       thr=$OPTARG
+      ;;
+    h)
+      usage
       ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
