@@ -53,10 +53,10 @@ trap cleanup EXIT
 # Iterate over the BAM files in the directory
 for bam_file in "$bam_directory"/*.bam; do
 	output_bam="${bam_file%.bam}_proc.bam"
-	echo "\n\n\nProcessing: $bam_file ::: writing to $output_bam"
+	echo -e "\n\n\nProcessing: $bam_file ::: writing to $output_bam"
 	echo "-------$bam_file---------"
 	samtools flagstat "$bam_file"
-	echo "----------------------\n\n"
+	echo -e "----------------------\n\n"
 	# filter unmapped reads and multi-mapping (low quality) alignments
 	samtools view --threads "$thr" -b -F 4 -q 1 -o temp1.bam "${bam_file}"
 	# query name sort for fixmate
@@ -77,5 +77,5 @@ for bam_file in "$bam_directory"/*.bam; do
 	echo "-------$output_bam---------"
 	# flagstat the output file
 	samtools flagstat "$output_bam"
-	echo "----------------------\n\n\n"
+	echo -e "----------------------\n\n\n"
 done
