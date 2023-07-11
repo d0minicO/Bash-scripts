@@ -15,16 +15,6 @@ usage() {
   exit 1
 }
 
-# Function to clean up temp file
-cleanup() {
-  if [ -f "temp.txt" ]; then
-    rm temp.txt
-  fi
-}
-
-# Set up trap to ensure cleanup happens
-trap cleanup EXIT
-
 # Parse command line arguments
 while getopts ":f:j:o:h" opt; do
   case ${opt} in
@@ -114,11 +104,11 @@ declare -A barcodes=(
 )
 
 # Export the array as a string
-declare -p barcodes > temp.txt
+declare -p barcodes > temp_barcodes.txt
 
 # Function to count barcode in a file
 count_barcode() {
-  source temp.txt # source the temp file
+  source temp_barcodes.txt # source the temp file
   barcode_name=$1
   barcode=${barcodes[$barcode_name]}
   file=$2
@@ -131,3 +121,11 @@ while read -r line; do
     echo "Processing file $line"
     printf '%s\n' "${!barcodes[@]}" | parallel -j $threads count_barcode {} $line >> $output
 done < "$file"
+
+
+# clean up temp file
+if [ -f "temp_barcodes.txt" ]; then
+	echo "Cleaning up temporary file containing barcodes."
+	rm temp_barcodes.txt
+fi
+
