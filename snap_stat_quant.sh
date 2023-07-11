@@ -2,9 +2,11 @@
 
 # Help message
 usage() {
-  echo "Script for quantifying barcodes in fastq files (not gzipped!) for SNAP-CUTANA™ K-MetStat Panel"
+  echo "Script for quantifying SNAP-CUTANA™ K-MetStat Panel barcodes in parallel"
+  echo -e "\n Dominic D. G. Owens, July 2023\n"
+  echo "Fastq files should not be gzipped but just plain .fastq format"
   echo "Usage: $0 -f FILE -j THREADS -o OUTPUT"
-  echo "  -f FILE     specify an input file"
+  echo "  -f FILE     specify an input text file containing the full path to the fq files each on a new line"
   echo "  -j THREADS  specify the number of threads"
   echo "  -o OUTPUT   specify the output file"
   echo "  -h          display this help message"
