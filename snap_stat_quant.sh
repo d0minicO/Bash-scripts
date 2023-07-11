@@ -2,6 +2,7 @@
 
 # Help message
 usage() {
+  echo "Script for quantifying barcodes in fastq files (not gzipped!) for SNAP-CUTANA™ K-MetStat Panel"
   echo "Usage: $0 -f FILE"
   echo "  -f FILE   specify an input file"
   echo "  -h        display this help message"
