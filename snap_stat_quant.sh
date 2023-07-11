@@ -9,9 +9,6 @@ usage() {
   exit 1
 }
 
-# Initialize file variable
-file=""
-
 # Parse command line arguments
 while getopts ":f:h" opt; do
   case ${opt} in
