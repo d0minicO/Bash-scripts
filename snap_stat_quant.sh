@@ -5,6 +5,8 @@ usage() {
   echo "Script for quantifying SNAP-CUTANA™ K-MetStat Panel barcodes in parallel"
   echo -e "\n Dominic D. G. Owens, July 2023\n"
   echo "Fastq files should not be gzipped but just plain .fastq format"
+  echo "Requires gnu parallel to be installed and working. Run parallel --citation to silence the citation messages"
+  echo -e "\n" 
   echo "Usage: $0 -f FILE -j THREADS -o OUTPUT"
   echo "  -f FILE     specify an input text file containing the full path to the fq files each on a new line"
   echo "  -j THREADS  specify the number of threads"
@@ -75,7 +77,7 @@ if [ -f "$output" ]; then
 fi
 
 # Main script
-# Barcode identities
+# Barcode identities from https://www.epicypher.com/content/documents/SNAP-CUTANA_K-MetStat_Panel_ShellScript.sh
 declare -A barcodes=(
 ["Unmodified_A"]="TTCGCGCGTAACGACGTACCGT"
 ["Unmodified_B"]="CGCGATACGACCGCGTTACGCG"
