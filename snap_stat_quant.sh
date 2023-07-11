@@ -11,6 +11,16 @@ usage() {
   exit 1
 }
 
+# Function to clean up temp file
+cleanup() {
+  if [ -f "temp.txt" ]; then
+    rm temp.txt
+  fi
+}
+
+# Set up trap to ensure cleanup happens
+trap cleanup EXIT
+
 # Parse command line arguments
 while getopts ":f:j:o:h" opt; do
   case ${opt} in
@@ -55,59 +65,65 @@ if [[ -z "$output" ]]; then
     usage
 fi
 
+
+# Check if output file exists and remove it if it does
+if [ -f "$output" ]; then
+    echo "Output file $output exists. Overwriting."
+    rm "$output"
+fi
+
 # Main script
 # Barcode identities
-declare -A barcodes
-barcodes=(
-["TTCGCGCGTAACGACGTACCGT"]="Unmodified A"
-["CGCGATACGACCGCGTTACGCG"]="Unmodified B"
-["CGACGTTAACGCGTTTCGTACG"]="H3K4me1 A"
-["CGCGACTATCGCGCGTAACGCG"]="H3K4me1 B"
-["CCGTACGTCGTGTCGAACGACG"]="H3K4me2 A"
-["CGATACGCGTTGGTACGCGTAA"]="H3K4me2 B"
-["TAGTTCGCGACACCGTTCGTCG"]="H3K4me3 A"
-["TCGACGCGTAAACGGTACGTCG"]="H3K4me3 B"
-["TTATCGCGTCGCGACGGACGTA"]="H3K9me1 A"
-["CGATCGTACGATAGCGTACCGA"]="H3K9me1 B"
-["CGCATATCGCGTCGTACGACCG"]="H3K9me2 A"
-["ACGTTCGACCGCGGTCGTACGA"]="H3K9me2 B"
-["ACGATTCGACGATCGTCGACGA"]="H3K9me3 A"
-["CGATAGTCGCGTCGCACGATCG"]="H3K9me3 B"
-["CGCCGATTACGTGTCGCGCGTA"]="H3K27me1 A"
-["ATCGTACCGCGCGTATCGGTCG"]="H3K27me1 B"
-["CGTTCGAACGTTCGTCGACGAT"]="H3K27me2 A"
-["TCGCGATTACGATGTCGCGCGA"]="H3K27me2 B"
-["ACGCGAATCGTCGACGCGTATA"]="H3K27me3 A"
-["CGCGATATCACTCGACGCGATA"]="H3K27me3 B"
-["CGCGAAATTCGTATACGCGTCG"]="H3K36me1 A"
-["CGCGATCGGTATCGGTACGCGC"]="H3K36me1 B"
-["GTGATATCGCGTTAACGTCGCG"]="H3K36me2 A"
-["TATCGCGCGAAACGACCGTTCG"]="H3K36me2 B"
-["CCGCGCGTAATGCGCGACGTTA"]="H3K36me3 A"
-["CCGCGATACGACTCGTTCGTCG"]="H3K36me3 B"
-["GTCGCGAACTATCGTCGATTCG"]="H4K20me1 A"
-["CCGCGCGTATAGTCCGAGCGTA"]="H4K20me1 B"
-["CGATACGCCGATCGATCGTCGG"]="H4K20me2 A"
-["CCGCGCGATAAGACGCGTAACG"]="H4K20me2 B"
-["CGATTCGACGGTCGCGACCGTA"]="H4K20me3 A"
-["TTTCGACGCGTCGATTCGGCGA"]="H4K20me3 B"
+declare -A barcodes=(
+["Unmodified_A"]="TTCGCGCGTAACGACGTACCGT"
+["Unmodified_B"]="CGCGATACGACCGCGTTACGCG"
+["H3K4me1_A"]="CGACGTTAACGCGTTTCGTACG"
+["H3K4me1_B"]="CGCGACTATCGCGCGTAACGCG"
+["H3K4me2_A"]="CCGTACGTCGTGTCGAACGACG"
+["H3K4me2_B"]="CGATACGCGTTGGTACGCGTAA"
+["H3K4me3_A"]="TAGTTCGCGACACCGTTCGTCG"
+["H3K4me3_B"]="TCGACGCGTAAACGGTACGTCG"
+["H3K9me1_A"]="TTATCGCGTCGCGACGGACGTA"
+["H3K9me1_B"]="CGATCGTACGATAGCGTACCGA"
+["H3K9me2_A"]="CGCATATCGCGTCGTACGACCG"
+["H3K9me2_B"]="ACGTTCGACCGCGGTCGTACGA"
+["H3K9me3_A"]="ACGATTCGACGATCGTCGACGA"
+["H3K9me3_B"]="CGATAGTCGCGTCGCACGATCG"
+["H3K27me1_A"]="CGCCGATTACGTGTCGCGCGTA"
+["H3K27me1_B"]="ATCGTACCGCGCGTATCGGTCG"
+["H3K27me2_A"]="CGTTCGAACGTTCGTCGACGAT"
+["H3K27me2_B"]="TCGCGATTACGATGTCGCGCGA"
+["H3K27me3_A"]="ACGCGAATCGTCGACGCGTATA"
+["H3K27me3_B"]="CGCGATATCACTCGACGCGATA"
+["H3K36me1_A"]="CGCGAAATTCGTATACGCGTCG"
+["H3K36me1_B"]="CGCGATCGGTATCGGTACGCGC"
+["H3K36me2_A"]="GTGATATCGCGTTAACGTCGCG"
+["H3K36me2_B"]="TATCGCGCGAAACGACCGTTCG"
+["H3K36me3_A"]="CCGCGCGTAATGCGCGACGTTA"
+["H3K36me3_B"]="CCGCGATACGACTCGTTCGTCG"
+["H4K20me1_A"]="GTCGCGAACTATCGTCGATTCG"
+["H4K20me1_B"]="CCGCGCGTATAGTCCGAGCGTA"
+["H4K20me2_A"]="CGATACGCCGATCGATCGTCGG"
+["H4K20me2_B"]="CCGCGCGATAAGACGCGTAACG"
+["H4K20me3_A"]="CGATTCGACGGTCGCGACCGTA"
+["H4K20me3_B"]="TTTCGACGCGTCGATTCGGCGA"
 )
+
+# Export the array as a string
+declare -p barcodes > temp.txt
 
 # Function to count barcode in a file
 count_barcode() {
-  barcode=$1
+  source temp.txt # source the temp file
+  barcode_name=$1
+  barcode=${barcodes[$barcode_name]}
   file=$2
-  echo -e "${barcodes[$barcode]}\t$barcode\t$file\t$(grep -c $barcode "$file")"
+  echo -e "$barcode_name\t$barcode\t$file\t$(grep -c $barcode "$file")"
 }
 
 export -f count_barcode
 
-while read -r r1_file && read -r r2_file; do
-    echo "Processing file $r1_file"
-    echo "Processing file $r2_file"
-    for file in $r1_file $r2_file; do
-        for barcode in "${!barcodes[@]}"; do
-            count_barcode $barcode $file >> $output
-        done
-    done
+while read -r line; do
+    echo "Processing file $line"
+    printf '%s\n' "${!barcodes[@]}" | parallel -j $threads count_barcode {} $line >> $output
 done < "$file"
