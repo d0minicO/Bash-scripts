@@ -53,7 +53,7 @@ fi
 
 while read -r r1_file && read -r r2_file; do
     # Run the trim_galore command
-    "${path_to_trim_galore}" --paired --path_to_cutadapt "${path_to_cutadapt}" --quality 20 --length 20 --cores 4 --fastqc -o "$output_dir" "$r1_file" "$r2_file"
+    "${path_to_trim_galore}" --paired --path_to_cutadapt "${path_to_cutadapt}" --quality 20 --length 20 --cores 4 --fastqc_args "-t 8" -o "$output_dir" "$r1_file" "$r2_file"
 
     echo "Processed: $r1_file and $r2_file"
 done < "$input_file"
