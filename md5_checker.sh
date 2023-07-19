@@ -49,7 +49,7 @@ for file in *.fastq.gz; do
 
         # Compare the calculated and expected checksums and print a message
         if [[ "${calculated_checksum}" == "${expected_checksum}" ]]; then
-            echo "${file}: CHECKSUM MATCH"
+            echo "${file}: CHECKSUM MATCH - Calculated MD5 Checksum is ${calculated_checksum}"
         else
             echo "${file}: CHECKSUM MISMATCH - Expected ${expected_checksum}, but got ${calculated_checksum}"
         fi
