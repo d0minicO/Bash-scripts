@@ -1,7 +1,7 @@
 #!/bin/bash
 
 usage() {
-    echo "Usage: $0 -i input_file -o output_dir -t path_to_trim_galore -p path_to_cutadapt"
+    echo "Usage: $0 -i input_file -o output_dir -t path_to_trim_galore -p path_to_cutadapt -n num_threads"
     echo
     echo "This script takes an input_file and an output_dir as command-line arguments"
     echo "and processes them using the trim_galore command."
@@ -12,9 +12,12 @@ usage() {
     echo "  -o  Specify the output_dir"
     echo "  -t  Specify the path_to_trim_galore eg /home/dowens/TrimGalore-0.6.10/trim_galore"
     echo "  -p  Specify the path_to_cutadapt eg /home/dowens/MyPythonEnv/bin/cutadapt"
+    echo "  -n  Specify the number of threads to use"
 }
 
-while getopts ":hi:o:t:p:" opt; do
+num_threads=1
+
+while getopts ":hi:o:t:p:n:" opt; do
     case ${opt} in
         h)
             usage
@@ -31,6 +34,9 @@ while getopts ":hi:o:t:p:" opt; do
             ;;
         p)
             path_to_cutadapt=$OPTARG
+            ;;
+        n)
+            num_threads=$OPTARG
             ;;
         \?)
             echo "Invalid option: $OPTARG" 1>&2
@@ -51,9 +57,18 @@ if [ -z "$input_file" ] || [ -z "$output_dir" ] || [ -z "$path_to_trim_galore" ]
     exit 1
 fi
 
-while read -r r1_file && read -r r2_file; do
+export path_to_trim_galore path_to_cutadapt output_dir
+
+process_files() {
+    r1_file=$1
+    r2_file=$2
     # Run the trim_galore command
-    "${path_to_trim_galore}" --paired --path_to_cutadapt "${path_to_cutadapt}" --quality 20 --length 20 --cores 4 --fastqc_args "-t 8" -o "$output_dir" "$r1_file" "$r2_file"
+    "${path_to_trim_galore}" --paired --path_to_cutadapt "${path_to_cutadapt}" --quality 20 --length 20 --fastqc -o "$output_dir" "$r1_file" "$r2_file"
 
     echo "Processed: $r1_file and $r2_file"
-done < "$input_file"
+}
+
+export -f process_files
+
+# Use GNU Parallel to process the files in parallel
+cat "$input_file" | parallel -j "$num_threads" -N2 process_files {1} {2}
