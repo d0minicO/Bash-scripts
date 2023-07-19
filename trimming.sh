@@ -1,7 +1,7 @@
 #!/bin/bash
 
 usage() {
-    echo "Usage: $0 -i input_file -o output_dir -t path_to_trim_galore"
+    echo "Usage: $0 -i input_file -o output_dir -t path_to_trim_galore -p path_to_cutadapt"
     echo
     echo "This script takes an input_file and an output_dir as command-line arguments"
     echo "and processes them using the trim_galore command."
@@ -11,9 +11,10 @@ usage() {
     echo "  -i  Specify the input_file (text file containing paired-end fq files on adjacent newlines)"
     echo "  -o  Specify the output_dir"
     echo "  -t  Specify the path_to_trim_galore eg /home/dowens/TrimGalore-0.6.10/trim_galore"
+    echo "  -p  Specify the path_to_cutadapt eg /home/dowens/MyPythonEnv/bin/cutadapt"
 }
 
-while getopts ":hi:o:t:" opt; do
+while getopts ":hi:o:t:p:" opt; do
     case ${opt} in
         h)
             usage
@@ -27,6 +28,9 @@ while getopts ":hi:o:t:" opt; do
             ;;
         t)
             path_to_trim_galore=$OPTARG
+            ;;
+        p)
+            path_to_cutadapt=$OPTARG
             ;;
         \?)
             echo "Invalid option: $OPTARG" 1>&2
@@ -49,8 +53,7 @@ fi
 
 while read -r r1_file && read -r r2_file; do
     # Run the trim_galore command
-    "${path_to_trim_galore}" --paired --quality 20 --length 20 --cores 4 --fastqc -o "$output_dir" "$r1_file" "$r2_file"
+    "${path_to_trim_galore}" --paired --path_to_cutadapt "${path_to_cutadapt}" --quality 20 --length 20 --cores 4 --fastqc -o "$output_dir" "$r1_file" "$r2_file"
 
     echo "Processed: $r1_file and $r2_file"
 done < "$input_file"
-
