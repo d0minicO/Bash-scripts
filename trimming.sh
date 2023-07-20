@@ -1,5 +1,8 @@
 #!/bin/bash
 
+## bash script wrapper for parallel processing of fastq files using trim_galore
+## written by Dominic D.G. Owens
+
 usage() {
     echo "Usage: $0 -i input_file -o output_dir -t path_to_trim_galore -p path_to_cutadapt -n num_threads"
     echo
@@ -57,8 +60,7 @@ if [ -z "$input_file" ] || [ -z "$output_dir" ] || [ -z "$path_to_trim_galore" ]
     exit 1
 fi
 
-export path_to_trim_galore path_to_cutadapt output_dir
-
+# Define the process_files function and run it directly in the parallel command
 process_files() {
     r1_file=$1
     r2_file=$2
@@ -68,7 +70,6 @@ process_files() {
     echo "Processed: $r1_file and $r2_file"
 }
 
-export -f process_files
-
 # Use GNU Parallel to process the files in parallel
-cat "$input_file" | parallel -j "$num_threads" -N2 process_files {1} {2}
+# We pass all the required variables to parallel and run the function inline
+cat "$input_file" | parallel -j "$num_threads" -N2 process_files {1} {2} ::: "$path_to_trim_galore" "$path_to_cutadapt" "$output_dir"
