@@ -60,16 +60,6 @@ if [ -z "$input_file" ] || [ -z "$output_dir" ] || [ -z "$path_to_trim_galore" ]
     exit 1
 fi
 
-# Define the process_files function and run it directly in the parallel command
-process_files() {
-    r1_file=$1
-    r2_file=$2
-    # Run the trim_galore command
-    "${path_to_trim_galore}" --paired --path_to_cutadapt "${path_to_cutadapt}" --quality 20 --length 20 --fastqc -o "$output_dir" "$r1_file" "$r2_file"
-
-    echo "Processed: $r1_file and $r2_file"
-}
-
 # Use GNU Parallel to process the files in parallel
-# We pass all the required variables to parallel and run the function inline
-cat "$input_file" | parallel -j "$num_threads" -N2 process_files {1} {2} ::: "$path_to_trim_galore" "$path_to_cutadapt" "$output_dir"
+# We define the process_files function within parallel command and pass variables directly
+cat "$input_file" | parallel -j "$num_threads" -N2 "r1_file={1}; r2_file={2}; ${path_to_trim_galore} --paired --path_to_cutadapt ${path_to_cutadapt} --quality 20 --length 20 --fastqc -o ${output_dir} \$r1_file \$r2_file; echo Processed: \$r1_file and \$r2_file"
