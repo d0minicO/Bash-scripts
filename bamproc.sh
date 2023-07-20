@@ -1,5 +1,9 @@
 #!/bin/bash
 
+## bash script wrapper for samtools to filter bam files and remove PCR duplicates
+## run on post alignment bam files
+## written by Dominic D.G. Owens
+
 # Print usage help message
 usage() {
   echo "Usage: $0 [-d bam_directory] [-t threads] [-h]"

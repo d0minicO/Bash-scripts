@@ -1,8 +1,10 @@
 #!/bin/bash
 
-## script to verify .fastq.gz file integrity
+## bash script to verify .fastq.gz file integrity
 ## pass -d argument /path/to/data
 ## script will perform checksums and compare with .md5 files for all .fastq.gz files in this directory 
+## written by Dominic D.G. Owens
+
 
 # Function to show usage
 usage() {

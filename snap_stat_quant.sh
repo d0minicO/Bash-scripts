@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+## bash script to quantify SNAP-CUTANA™ K-MetStat Panel barcodes
+## in fastq files in parallel
+## written by Dominic D.G. Owens
+
 # Help message
 usage() {
   echo "Script for quantifying SNAP-CUTANA™ K-MetStat Panel barcodes in parallel"
